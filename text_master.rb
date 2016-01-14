@@ -17,6 +17,17 @@ class Checkout
   def scan(item)
     @products << item
   end
+  def total
+    original_total - discount_total
+  end
+
+  private
+  def original_total
+    @products.collect{ |product| product[:price] }.inject(0, :+)
+  end
+  def discount_total
+    @discounts.collect { |discount| discount.amount(@products) }.inject(0, :+)
+  end
 end
 
 class Discount
@@ -43,7 +54,7 @@ end
 
 class ThreeOrMore < Discount
   def discount_per_item
-    0.10 # could change based on product in the future
+    0.50 # could change based on product in the future
   end
   def amount(items)
     product_count = filter_by_product(items).count

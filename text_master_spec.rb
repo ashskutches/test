@@ -16,6 +16,32 @@ describe 'Checkout' do
       checkout.scan(item)
       expect(checkout.products[0]).to eql(item)
     end
+    describe 'should apply discounts' do
+      let!(:discounts) {[
+        TwoForOne.new(product: products[0]),
+        ThreeOrMore.new(product: products[1]),
+      ]}
+      let!(:checkout) { Checkout.new(discounts) }
+      describe 'should handle multiple variations' do
+        it 'FR1, AP1, FR1, CF1' do
+          items = [products[0], products[1], products[0], products[2]]
+          items.each { |item| checkout.scan(item) }
+          expect(checkout.total).to eql(19.34)
+          #Our CEO is a big fan of buy-one-get-one-free offers and of fruit tea. He wants us to add a rule to do this.
+          #expect(checkout.total).to eql(22.25)
+        end
+        it 'FR1, FR1' do
+          items = [products[0], products[0]]
+          items.each { |item| checkout.scan(item) }
+          expect(checkout.total).to eql(3.11)
+        end
+        it 'AP1, AP1, FR1, AP1' do
+          items = [products[1], products[1], products[0], products[1]]
+          items.each { |item| checkout.scan(item) }
+          expect(checkout.total).to eql(16.61)
+        end
+      end
+    end
   end
 end
 describe 'Discount' do
