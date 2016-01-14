@@ -35,4 +35,14 @@ describe 'Discount' do
     end
   end
 
+  describe 'ThreeOrMore' do
+    let!(:apple) { products.find { |item| item[:id] == 'AP1' } }
+    let!(:discount) { ThreeOrMore.new(product: apple) }
+    describe '#amount' do
+      it 'should not apply if criteria not met' do
+        expect(discount.amount([apple])).to eql(0) #1
+        expect(discount.amount([apple, apple])).to eql(0) #2
+      end
+    end
+  end
 end
