@@ -22,17 +22,15 @@ describe 'Discount' do
   describe 'TwoForOne' do
     let!(:fruit_tea) { products.find { |item| item[:id] == 'FR1' } }
     let!(:discount) { TwoForOne.new(product: fruit_tea) }
-    let!(:items) { [fruit_tea, fruit_tea] }
-    describe '.apply' do
+    describe '#amount' do
       it 'should not apply if criteria not met' do
         expect(discount.amount([fruit_tea])).to eql(0) #1
       end
       it 'should apply (two for one) fruit tea discount' do
-        expect(discount.amount(items)).to eql(fruit_tea[:price] * -1) #2
+        expect(discount.amount([fruit_tea, fruit_tea])).to eql(fruit_tea[:price] * -1) #2
       end
       it 'should handle odd numbers correctly' do
-        items = [fruit_tea, fruit_tea, fruit_tea]
-        expect(discount.amount(items)).to eql(fruit_tea[:price] * 1 * -1) #3
+        expect(discount.amount([fruit_tea, fruit_tea, fruit_tea])).to eql(fruit_tea[:price] * 1 * -1) #3
       end
     end
   end

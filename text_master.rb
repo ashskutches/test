@@ -21,26 +21,30 @@ end
 
 class Discount
   attr_accessor :product
-  def filter_by_product(items)
-    items.select { |item| item[:id] == product[:id] }
-  end
-end
 
-class TwoForOne < Discount
   def initialize(product: product)
     @product = product
   end
+  def filter_by_product(items)
+    items.select { |item| item[:id] == product[:id] }
+  end
+
+  private
+end
+
+class TwoForOne < Discount
   def amount(items)
-    product_count  = filter_by_product(items).count
+    product_count = filter_by_product(items).count
     return 0 if product_count <= 1
     amount_that_meet_criteria = (product_count / 2).floor.to_i
     amount_that_meet_criteria * product[:price] * -1
   end
 end
 
-class ThreeApples < Discount
-  def self.apply(items)
-    return 0
+class ThreeOrMore < Discount
+  def amount(items)
+    product_count = filter_by_product(items).count
+    return 0 if product_count < 3
   end
 end
 
