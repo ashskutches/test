@@ -1,35 +1,3 @@
-def products
-  [
-    { id: 'FR1', name: 'Fruit Tea', price: 3.11 },
-    { id: 'AP1', name: 'Apple',     price: 5.00 },
-    { id: 'CF1', name: 'Coffee',    price: 11.23 }
-  ]
-end
-
-class Checkout
-  attr_accessor :discounts
-  attr_reader :products
-
-  def initialize(discounts)
-    @products = []
-    @discounts = discounts
-  end
-  def scan(item)
-    @products << item
-  end
-  def total
-    original_total - discount_total
-  end
-
-  private
-  def original_total
-    @products.collect{ |product| product[:price] }.inject(0, :+)
-  end
-  def discount_total
-    @discounts.collect { |discount| discount.amount(@products) }.inject(0, :+)
-  end
-end
-
 class Discount
   attr_accessor :product
 
